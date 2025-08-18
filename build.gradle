@@ -1,14 +1,13 @@
-plugins {
-    id 'java'
-    id 'application'
+
+ plugins {
+    id "org.springframework.boot" version "${springBootVersion}"
+    id "io.spring.dependency-management" version "1.1.7"
+    id "java"
 }
 
+apply from: "$rootDir/gradle/spring-boot.gradle"
 group = 'hr.ent'
 version = '1.0-SNAPSHOT'
-
-application {
-    mainClass = 'Main'
-}
 
 repositories {
     mavenCentral()

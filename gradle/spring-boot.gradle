@@ -1,0 +1,19 @@
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "org.springframework.boot:spring-boot-starter:${springBootVersion}"
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    //implementation("org.springframework.boot:spring-boot-starter-web")
+    //implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
+    //runtimeOnly("org.portgresql:r2dbc-postgresql")
+}
+
+springBoot {
+    mainClass = 'hr.ent.ApplicationStart'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
