@@ -3,7 +3,7 @@ repositories {
 }
 
 dependencies {
-    implementation "org.springframework.boot:spring-boot-starter:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     //implementation("org.springframework.boot:spring-boot-starter-web")
     //implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
