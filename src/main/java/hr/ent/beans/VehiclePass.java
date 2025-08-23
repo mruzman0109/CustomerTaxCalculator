@@ -8,11 +8,11 @@ import java.util.List;
 @Data
 public class VehiclePass {
     private String vehicleType;
-    private LocalDateTime passTime;
+    private List<LocalDateTime> passTime;
 
     public VehiclePass() {}
 
-    public VehiclePass(String vehicleType, LocalDateTime passTime) {
+    public VehiclePass(String vehicleType, List<LocalDateTime> passTime) {
         this.vehicleType = vehicleType;
         this.passTime = passTime;
     }

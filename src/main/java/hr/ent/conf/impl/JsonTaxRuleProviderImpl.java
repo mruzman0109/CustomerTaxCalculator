@@ -1,28 +1,36 @@
 package hr.ent.conf.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import hr.ent.beans.TaxConfig;
 import hr.ent.beans.TaxRule;
-import hr.ent.conf.TaxRuleConfiguration;
 import hr.ent.conf.TaxRuleProvider;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
+@Component
+@Profile("json")
 public class JsonTaxRuleProviderImpl implements TaxRuleProvider {
 
-    private final TaxRuleConfiguration config;
+    private final TaxConfig config;
 
-    public JsonTaxRuleProviderImpl(TaxRuleConfiguration config) {
-        this.config = config;
+    public JsonTaxRuleProviderImpl(@Value("${tax.config.city}") String jsonFileName) {
+        this.config = loadConfig(jsonFileName);
     }
 
-    private TaxRuleConfiguration loadConfig(String cofigJson) {
+    private TaxConfig loadConfig(String configFile) {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
         try {
             //tu dodam fileove koji se nalaze u resource config: /resources/config
-            return mapper.readValue(new File(cofigJson), TaxRuleConfiguration.class);
+            ClassPathResource resource = new ClassPathResource(configFile + ".json");
+            return mapper.readValue(resource.getInputStream(), TaxConfig.class);
         } catch (IOException e) {
             throw new RuntimeException("Failed to load tax rules JSON config", e);
         }
