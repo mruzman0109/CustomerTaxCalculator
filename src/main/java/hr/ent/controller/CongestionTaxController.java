@@ -20,7 +20,7 @@ public class CongestionTaxController {
     }
 
     @PostMapping("/calculate")
-    public float calculateTax(@RequestBody List<VehiclePass> passes) {
-        return congestionTaxService.calculateTax(passes);
+    public float calculateTax(@RequestBody List<VehiclePass> vehiclePasses) {
+        return congestionTaxService.calculateTax(vehiclePasses);
     }
 }
