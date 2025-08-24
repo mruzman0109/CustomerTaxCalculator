@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.function.Predicate;
 
 @Service
 public class CongestionTaxService {
@@ -21,15 +22,21 @@ public class CongestionTaxService {
 
     public float calculateTax(List<VehiclePass> vehiclePasses) {
         if (vehiclePasses.isEmpty()) return 0;
+        List<LocalDateTime> sortedPasses = vehiclePasses.stream()
+                .filter(pass -> !taxRuleProvider.getExemptVehicles().contains(pass.getVehicleType()))
+                .flatMap(pass -> pass.getPassTime().stream())
+                .filter(passTime -> !isExemptDate.test(passTime.toLocalDate()))  // koristimo Predicate lambda
+                .sorted()
+                .toList();
         float totalFee = 0;
         LocalDateTime windowStart = null;
         float windowMaxFee = 0;
         for (VehiclePass pass : vehiclePasses) {
             String vehicleType = pass.getVehicleType();
             if (taxRuleProvider.getExemptVehicles().contains(vehicleType)) continue;
-            List<LocalDateTime> sortedTimes = pass.getPassTime().stream().sorted().toList();
-            for (LocalDateTime passTime : sortedTimes) {
-                if (isExemptDate(passTime.toLocalDate())) continue;
+    //      List<LocalDateTime> sortedTimes = pass.getPassTime().stream().sorted().toList();
+            for (LocalDateTime passTime : sortedPasses) {
+                //if (isExemptDate(passTime.toLocalDate())) continue;
                 float fee = getFeeForTime(passTime.toLocalTime());
                 if (windowStart == null || passTime.isAfter(windowStart.plusMinutes(60))) {
                     totalFee += windowMaxFee;
@@ -45,9 +52,8 @@ public class CongestionTaxService {
         return Math.min(totalFee, taxRuleProvider.getMaxDailyFee());
     }
 
-    private boolean isExemptDate(LocalDate date) {
-        return date.getDayOfWeek().getValue() >= 6 || date.getMonthValue() == 7;
-    }
+    private final Predicate<LocalDate> isExemptDate =
+            date -> date.getDayOfWeek().getValue() >= 6 || date.getMonthValue() == 7;
 
     private int getFeeForTime(LocalTime time) {
         for (TaxRule rule : taxRuleProvider.getRules()) {
