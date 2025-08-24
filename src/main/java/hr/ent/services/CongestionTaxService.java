@@ -26,6 +26,7 @@ public class CongestionTaxService {
                 .filter(pass -> !taxRuleProvider.getExemptVehicles().contains(pass.getVehicleType()))
                 .flatMap(pass -> pass.getPassTime().stream())
                 .filter(passTime -> !isExemptDate.test(passTime.toLocalDate()))  // koristimo Predicate lambda
+                //.filter(passTime -> passTime.getYear() == 2013) // validacija datuma - da je u 2013. - ako da onda je potrebno popraviti i testove!...
                 .sorted()
                 .toList();
         float totalFee = 0;
