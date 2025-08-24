@@ -38,11 +38,10 @@ public class CongestionTaxService {
                 } else {
                     windowMaxFee = Math.max(windowMaxFee, fee);
                 }
-                totalFee += windowMaxFee;
             }
 
         }
-
+        totalFee += windowMaxFee;
         return Math.min(totalFee, taxRuleProvider.getMaxDailyFee());
     }
 
